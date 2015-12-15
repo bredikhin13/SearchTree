@@ -36,7 +36,7 @@ public class NCSearchTree<K, V> implements Iterable<V>, Serializable {
 
         K key;
         V value;
-        Node left, right;
+        Node<K,V> left, right;
     }
 
     Node<K, V> root = null;
@@ -57,7 +57,59 @@ public class NCSearchTree<K, V> implements Iterable<V>, Serializable {
     }
 
     public void delete(K key){
-        
+        Node<K, V> cur = root;
+        Node<K, V> next;
+        Node<K, V> prev = null;
+
+        try {
+            while (cur != null) {
+                if (compareKey(cur.left.key, key) == 0) {
+                    next = cur.left;
+                    if (next.right == null) {
+                        cur.left = next.left;
+                        return;
+                    } else {
+                        next = next.right;
+                        while (next.left!=null){
+                            prev = next;
+                            next = next.left;
+                        }
+                        cur.left.key = next.key;
+                        cur.left.value = next.value;
+                        prev.left=null;
+                        if(next.right!=null){
+                            prev.left = next.right;
+                        }
+                    }
+                } else if(compareKey(cur.right.key, key) == 0){
+                    next = cur.right;
+                    if (next.right == null) {
+                        cur.right = next.left;
+                        return;
+                    } else {
+                        next = next.right;
+                        while (next.left != null) {
+                            prev = next;
+                            next = next.left;
+                        }
+                        cur.right.key = next.key;
+                        cur.right.value = next.value;
+                        prev.left = null;
+                        if (next.right != null) {
+                            prev.left = next.right;
+                        }
+                    }
+                }else {
+                    if (compareKey(cur.key, key) > 0) {
+                        cur = cur.left;
+                    } else {
+                        cur = cur.right;
+                    }
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public V getValue(K key) throws NullPointerException {
